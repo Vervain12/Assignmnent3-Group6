@@ -7,6 +7,7 @@ export default function App() {
     const [day, setDay] = useState("");
     const [month, setMonth] = useState("1");
     const [fact, setFact] = useState("");
+    const [error, setError] = useState(null);
     const months = {
         "January": "1",
         "February": "2",
@@ -43,8 +44,8 @@ export default function App() {
             const data = await response.text();
             setFact(data);
         }
-        catch (e) {
-            console.error("Error: " + e)
+        catch (e:any) {
+            setError(e);
         }
     }
 
