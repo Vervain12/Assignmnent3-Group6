@@ -1,12 +1,14 @@
-import { StyleSheet, Text, View, TextInput } from 'react-native';
-import { Picker } from '@react-native-picker/picker';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity } from 'react-native';
+import  Dropdown  from '../components/dropdown';
 import { useState, useEffect } from "react";
 
 
 export default function App() {
     const [day, setDay] = useState("");
     const [month, setMonth] = useState("1");
+    const [monthName, setMonthName] = useState("January");
     const [fact, setFact] = useState("");
+    const [dropdownClicked, setDropdownClicked] = useState(false);
     const [error, setError] = useState(null);
     const months = {
         "January": "1",
@@ -29,8 +31,15 @@ export default function App() {
         if (day != "") {
             fetchApi();
         }
-
     }, [day, month]);
+
+    useEffect(() => {
+        handleShowDropdown();
+    }, [month])
+
+    const handleShowDropdown = () => {
+        setDropdownClicked(!dropdownClicked);
+    }
 
     const fetchApi = async () => {
         try {
@@ -61,15 +70,17 @@ export default function App() {
                 value={day}
                 onChangeText={setDay}
                 />
-            <Picker
-                selectedValue={month}
-                onValueChange={(monthValue) => setMonth(monthValue)}
-                style={styles.input}
-            >
-                {Object.entries(months).map(([monthName, monthNumber]) => (
-                    <Picker.Item key={monthNumber} label={monthName} value={monthNumber} />
-                ))}
-            </Picker>
+            { dropdownClicked ? 
+                <Dropdown
+                    months={months}
+                    setMonth={setMonth}
+                    setMonthName={setMonthName}/>
+                    :
+                <TouchableOpacity
+                    onPress={handleShowDropdown}>
+                    <Text>{monthName}</Text>
+                </TouchableOpacity>
+            }
             </View>
        </View>
     );
