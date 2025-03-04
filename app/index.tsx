@@ -63,24 +63,25 @@ export default function App() {
             <View>
                 <Text>{fact}</Text>
             </View>
-            <View>
-            <TextInput
-                style={styles.input}
-                keyboardType = 'numeric'
-                value={day}
-                onChangeText={setDay}
-                />
-            { dropdownClicked ? 
-                <Dropdown
-                    months={months}
-                    setMonth={setMonth}
-                    setMonthName={setMonthName}/>
-                    :
-                <TouchableOpacity
-                    onPress={handleShowDropdown}>
-                    <Text>{monthName}</Text>
-                </TouchableOpacity>
-            }
+            <View style={styles.inputArea}>
+                <TextInput
+                    style={styles.input}
+                    keyboardType = 'numeric'
+                    value={day}
+                    onChangeText={setDay}
+                    />
+                { dropdownClicked ? 
+                    <Dropdown
+                        months={months}
+                        setMonth={setMonth}
+                        setMonthName={setMonthName}/>
+                        :
+                    <TouchableOpacity
+                        style={styles.dropdown}
+                        onPress={handleShowDropdown}>
+                        <Text>{monthName}</Text>
+                    </TouchableOpacity>
+                }
             </View>
        </View>
     );
@@ -91,13 +92,26 @@ const styles = StyleSheet.create({
       height: 40,
       margin: 12,
       borderWidth: 1,
+      width: "70%",
+      textAlign: "center",
       padding: 10,
+      borderRadius: 5
+    },
+    inputArea: {
+        alignItems: "center",
+        width: "70%"
     },
     container: {
-        justifyContent: "center",
-        
-    },
-    picker: {
         alignItems: "center"
-    }
+    },
+    dropdown: {
+        borderWidth: 1,
+        borderColor: "black",
+        borderRadius: 5,
+        width: '70%',
+        padding: 10,
+        borderBottomWidth: 1,
+        borderBottomColor: '#eee',
+        alignItems: 'center'
+    },
 });
