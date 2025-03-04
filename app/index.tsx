@@ -1,6 +1,7 @@
 import { StyleSheet, Text, View, TextInput, TouchableOpacity } from 'react-native';
-import Dropdown from '../components/dropdown';
+import  Dropdown  from '../components/dropdown';
 import { useState, useEffect } from "react";
+
 
 export default function App() {
     const [day, setDay] = useState("");
@@ -8,22 +9,37 @@ export default function App() {
     const [monthName, setMonthName] = useState("January");
     const [fact, setFact] = useState("");
     const [dropdownClicked, setDropdownClicked] = useState(false);
-    const [error, setError] = useState<Error | null>(null);
-    
+    const [error, setError] = useState(null);
     const months = {
-        "January": "1", "February": "2", "March": "3", "April": "4",
-        "May": "5", "June": "6", "July": "7", "August": "8",
-        "September": "9", "October": "10", "November": "11", "December": "12"
+        "January": "1",
+        "February": "2",
+        "March": "3",
+        "April": "4",
+        "May": "5",
+        "June": "6",
+        "July": "7",
+        "August": "8",
+        "September": "9",
+        "October": "10",
+        "November": "11",
+        "December": "12"
     };
 
     const apiUrl = `https://numbersapi.p.rapidapi.com/${month}/${day}/date`;
 
     useEffect(() => {
-        if (day !== "") {
+        if (day != "") {
             fetchApi();
         }
     }, [day, month]);
-    
+
+    useEffect(() => {
+        handleShowDropdown();
+    }, [month])
+
+    const handleShowDropdown = () => {
+        setDropdownClicked(!dropdownClicked);
+    }
 
     const fetchApi = async () => {
         try {
@@ -36,85 +52,52 @@ export default function App() {
             });
             const data = await response.text();
             setFact(data);
-        } catch (e) {
-            setError(e instanceof Error ? e : new Error('An unknown error occurred.'));
         }
-    };
+        catch (e:any) {
+            setError(e);
+        }
+    }
 
-    return (
-        <View style={styles.container}>
-            <Text style={styles.factText}>{fact}</Text>
-            
+    return(
+       <View style={styles.container}>
+            <View>
+                <Text>{fact}</Text>
+            </View>
+            <View>
             <TextInput
                 style={styles.input}
-                keyboardType="numeric"
+                keyboardType = 'numeric'
                 value={day}
                 onChangeText={setDay}
-            />
-
-            {/* Button to toggle dropdown */}
-            <TouchableOpacity 
-                style={styles.dropdownButton}
-                onPress={() => setDropdownClicked(prev => !prev)}>
-                <Text style={styles.dropdownButtonText}>{monthName}</Text>
-            </TouchableOpacity>
-
-            {/* Conditional rendering for dropdown */}
-            {dropdownClicked && (
-                <Dropdown 
-                    months={months} 
-                    setMonth={setMonth} 
-                    setMonthName={setMonthName} 
                 />
-            )}
-
-            {error && <Text style={styles.errorText}>{error.message}</Text>}
-        </View>
+            { dropdownClicked ? 
+                <Dropdown
+                    months={months}
+                    setMonth={setMonth}
+                    setMonthName={setMonthName}/>
+                    :
+                <TouchableOpacity
+                    onPress={handleShowDropdown}>
+                    <Text>{monthName}</Text>
+                </TouchableOpacity>
+            }
+            </View>
+       </View>
     );
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1, 
-        justifyContent: "center",
-        alignItems: "center",
-        backgroundColor: "#f8f9fa",
-        padding: 20
-    },
     input: {
-        height: 40,
-        width: 100,
-        margin: 12,
-        borderWidth: 1,
-        borderColor: "#aaa",
-        borderRadius: 8,
-        paddingHorizontal: 10,
-        backgroundColor: "#fff",
-        textAlign: "center",
-        fontSize: 16
+      height: 40,
+      margin: 12,
+      borderWidth: 1,
+      padding: 10,
     },
-    factText: {
-        fontSize: 18,
-        fontWeight: "600",
-        textAlign: "center",
-        color: "#333",
-        marginBottom: 15
+    container: {
+        justifyContent: "center",
+        
     },
-    dropdownButton: {
-        backgroundColor: "#007bff",
-        padding: 10,
-        borderRadius: 6,
-        alignItems: "center",
-        marginTop: 10
-    },
-    dropdownButtonText: {
-        fontSize: 16,
-        color: "#fff",
-        fontWeight: "bold"
-    },
-    errorText: {
-        color: "red",
-        fontSize: 14,
-        marginTop: 10
+    picker: {
+        alignItems: "center"
     }
 });
